@@ -70,7 +70,7 @@ apt-get -y --purge remove bind9*;
 apt-get update; apt-get -y upgrade;
 
 # install webserver
-apt-get -y install nginx php5-fpm php5-cli
+apt-get -y install nginx php5-fpm php7.0-cli
 
 # install essential package
 echo "mrtg mrtg/conf_mods boolean true" | debconf-set-selections
@@ -99,17 +99,17 @@ echo "clear" >> .profile
 echo "screenfetch-dev" >> .profile
 
 
-# install webserver
-cd
+# nginx
+apt-get -y install nginx php-fpm php-mcrypt php-cli libexpat1-dev libxml-parser-perl
 rm /etc/nginx/sites-enabled/default
 rm /etc/nginx/sites-available/default
-wget -q -O /etc/nginx/nginx.conf https://raw.githubusercontent.com/akumasih112/code/master/null/nginx.conf
-mkdir -p /home/fns/public_html
-echo "<pre>Default Webpage</pre><br/><pre>Auto Installer Script Premium - ForNesia Community</pre>" > /home/fns/public_html/index.html
-echo "<?php phpinfo(); ?>" > /home/fns/public_html/info.php
-wget -q -O /etc/nginx/conf.d/vps.conf https://raw.githubusercontent.com/akumasih112/code/master/null/vps.conf
-sed -i 's/listen = \/var\/run\/php5-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php5/fpm/pool.d/www.conf
-service php5-fpm restart
+wget -O /etc/php/7.0/fpm/pool.d/www.conf "https://my.rzvpn.net/random/www.conf"
+mkdir -p /home/vps/public_html
+echo "<pre>Setup by Noba95 | telegram @OrangKuatSabahanTerkini | website OrangKuatSabahanTerkini.tk</pre>" > /home/vps/public_html/index.php
+echo "<?php phpinfo(); ?>" > /home/vps/public_html/info.php
+wget -O /etc/nginx/conf.d/vps.conf "https://my.rzvpn.net/random/vps.conf"
+sed -i 's/listen = \/var\/run\/php7.0-fpm.sock/listen = 127.0.0.1:9000/g' /etc/php/7.0/fpm/pool.d/www.conf
+service php7.0-fpm restart
 service nginx restart
 
 # install openvpn
@@ -179,18 +179,6 @@ apt-get -y install dropbear
 wget -O /etc/default/dropbear "https://my.rzvpn.net/random/dropbear"
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
-
-# upgrade dropbear 2017
-apt-get install zlib1g-dev
-wget -q https://matt.ucc.asn.au/dropbear/releases/dropbear-2017.75.tar.bz2
-bzip2 -cd dropbear-2017.75.tar.bz2 | tar xvf -
-cd dropbear-2017.75
-./configure
-make && make install
-mv /usr/sbin/dropbear /usr/sbin/dropbear1
-ln /usr/local/sbin/dropbear /usr/sbin/dropbear
-service dropbear restart
-
 
 # install vnstat gui
 cd /home/fns/public_html/
