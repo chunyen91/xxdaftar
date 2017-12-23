@@ -22,6 +22,15 @@ fi
 # go to root
 cd
 
+# check registered ip
+wget -q -O /etc/imd https://raw.githubusercontent.com/chunyen91/xxdaftar/master/daftarip.txt
+wget -q -O daftarip https://raw.githubusercontent.com/chunyen91/xxdaftar/master/daftarip.txt
+if ! grep -w -q $MYIP daftarip; then
+	echo "Maaf, hanya IP terdaftar yang bisa menggunakan script ini!"
+	echo "Hubungi Roziq Yusuf (Whatsapp: 081234054359)"
+	rm -f /root/daftarip
+	exit
+fi
 
     NORMAL=`echo "\033[m"`
     MENU=`echo "\033[36m"` #Blue
@@ -53,13 +62,11 @@ sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 service ssh restart
 
 # set repo
-wget -O /etc/apt/sources.list "https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/file/sources.list.debian8"
-wget "https://raw.githubusercontent.com/GegeEmbrie/autosshvpn/master/file/dotdeb.gpg"
+wget -q -O /etc/apt/sources.list https://raw.githubusercontent.com/akumasih112/code/master/sources.list.debian7
+wget "http://www.dotdeb.org/dotdeb.gpg"
+wget "http://www.webmin.com/jcameron-key.asc"
 cat dotdeb.gpg | apt-key add -;rm dotdeb.gpg
-cd /root
-wget http://www.webmin.com/jcameron-key.asc
-apt-key add jcameron-key.asc
-cd
+cat jcameron-key.asc | apt-key add -;rm jcameron-key.asc
 
 # remove unused
 apt-get -y --purge remove samba*;
@@ -90,6 +97,15 @@ apt-file update
 # setting vnstat
 vnstat -u -i venet0
 service vnstat restart
+
+# install screenfetch
+cd
+wget -q https://raw.githubusercontent.com/akumasih112/code/master/null/screenfetch-dev
+mv screenfetch-dev /usr/bin/screenfetch-dev
+chmod +x /usr/bin/screenfetch-dev
+echo "clear" >> .profile
+echo "screenfetch-dev" >> .profile
+
 
 # install webserver
 cd
@@ -171,6 +187,18 @@ apt-get -y install dropbear
 wget -O /etc/default/dropbear "https://my.rzvpn.net/random/dropbear"
 echo "/bin/false" >> /etc/shells
 echo "/usr/sbin/nologin" >> /etc/shells
+
+# upgrade dropbear 2017
+apt-get install zlib1g-dev
+wget -q https://matt.ucc.asn.au/dropbear/releases/dropbear-2017.75.tar.bz2
+bzip2 -cd dropbear-2017.75.tar.bz2 | tar xvf -
+cd dropbear-2017.75
+./configure
+make && make install
+mv /usr/sbin/dropbear /usr/sbin/dropbear1
+ln /usr/local/sbin/dropbear /usr/sbin/dropbear
+service dropbear restart
+
 
 # install vnstat gui
 cd /home/fns/public_html/
