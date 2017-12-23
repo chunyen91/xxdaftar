@@ -22,15 +22,7 @@ fi
 # go to root
 cd
 
-# check registered ip
-wget -q -O /etc/imd https://raw.githubusercontent.com/chunyen91/xxdaftar/master/daftarip.txt
-wget -q -O daftarip https://raw.githubusercontent.com/chunyen91/xxdaftar/master/daftarip.txt
-if ! grep -w -q $MYIP daftarip; then
-	echo "Maaf, hanya IP terdaftar yang bisa menggunakan script ini!"
-	echo "Hubungi Roziq Yusuf (Whatsapp: 081234054359)"
-	rm -f /root/daftarip
-	exit
-fi
+
 
     NORMAL=`echo "\033[m"`
     MENU=`echo "\033[36m"` #Blue
