@@ -1,0 +1,135 @@
+<?php
+session_start();
+require("../mainconfig.php");
+$page_type = "user_login";
+$msg_type = "nothing";
+
+if (isset($_SESSION['user'])) {
+	$sess_username = $_SESSION['user']['username'];
+	$check_user = mysqli_query($db, "SELECT * FROM users WHERE username = '$sess_username'");
+	$data_user = mysqli_fetch_assoc($check_user);
+	if (mysqli_num_rows($check_user) == 0) {
+		header("Location: ".$cfg_baseurl."logout.php");
+	} else if ($data_user['status'] == "Suspended") {
+		header("Location: ".$cfg_baseurl."logout.php");
+    }
+}
+    
+    if (isset($_POST['login'])) {
+		$post_username = mysqli_real_escape_string($db, trim($_POST['username']));
+		$post_password = mysqli_real_escape_string($db, trim($_POST['password']));
+		$pengacak="DIE64SD854F978F15DSF54FDF561SF65416541WFSWFC634165SWCFFCS";
+		$cek_password=md5($pengacak).md5($post_password);
+		$cek_password1=base64_encode($cek_password);
+		$cek_password2=sha1($cek_password1);
+		$cek_password3="S4SMED14$cek_password2";
+		
+		if (empty($post_username) || empty($post_password)) {
+			$msg_type = "error";
+			$msg_content = '<b>Gagal:</b> Mohon mengisi semua input.<script>swal("Ups!", "Mohon mengisi semua input.", "error");</script>';
+		} else {
+			$check_user = mysqli_query($db, "SELECT * FROM users WHERE username = '$post_username'");
+			if (mysqli_num_rows($check_user) == 0) {
+				$msg_type = "error";
+				$msg_content = '<b>Gagal:</b> Username atau password salah.<script>swal("Ups!", "Username atau password salah.", "error");</script>';
+			} else {
+				$data_user = mysqli_fetch_assoc($check_user);
+				if ($post_password <> $data_user['password']) {
+					$msg_type = "error";
+					$msg_content = '<b>Gagal:</b> Username atau password salah.<script>swal("Error!", "Username atau password salah.", "error");</script>';
+				} else if ($data_user['status'] == "Suspended") {
+					$msg_type = "error";
+					$msg_content = '<b>Gagal:</b> Akun Suspended .<script>swal("Error!", "Akun Suspended.", "error");</script>';
+					
+				} else {
+					$_SESSION['user'] = $data_user;
+					header("Location: ".$cfg_baseurl);
+				}
+			}
+		}
+	}
+
+
+include("../lib/header.php");
+?>
+  <div class="alert bg-info"><marquee> <b><font color="blue">SELAMAT DATANG DI OHMEDIA PANEL- Perusahaan Digital Marketing Termurah & Terbaik di Malaysia!!  <font color="red">   HUBUNGI/WHATSAPP ADMIN 0138733203(samrey steven)  </font></b></marquee></div> 
+                <center><img src="http://5starpanel.xyz/image.png" width="100" height="100"></center>
+                    <div class="row">
+                        <div class="col-lg-offset-2 col-lg-8">
+                            <div class="box box-success">
+                                    <div class="box-header with-border">
+                                      <h3 class="box-title"><i class="fa fa-sign-in"></i> Login</h3>
+                                      <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                        </button>
+                                      </div>
+                                    </div>
+                                    <div class="box-body">
+										<?php 
+										if ($msg_type == "error") {
+										?>
+										<div class="alert alert-danger">
+											<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+											<i class="fa fa-times-circle"></i>
+											<?php echo $msg_content; ?>
+										</div>
+										<?php
+										}
+										?>
+										<form class="form-horizontal" role="form" method="POST">
+											<div class="form-group">
+												<label class="col-md-3 control-label">Username</label>
+												<div class="col-md-9">
+													<input type="text" name="username" class="form-control" placeholder="Username">
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-3 control-label">Password</label>
+												<div class="col-md-9">
+													<input type="password" name="password" class="form-control" placeholder="Password">
+												</div>
+											</div>
+										    <div class="pull-right">
+                                                <button type="reset" class="btn btn-danger"><i class="fa fa-refresh"></i> Reset </button>
+                                                <button type="submit" name="login" class="btn btn-success"><i class="fa fa-send"></i> Login </button>
+                      </h5>
+	                      		<h4>CONTACT ADMIN</h1>
+		                    	<h5>
+			                	<a href="https://www.wasap.my/+60138733203" style="color:red;text-decoration:none">
+			                 	✧ WhatsApp</a><br />
+			                	<a href="http://t.me/ohmediax"
+				               style="color:red;text-decoration:none">✧ Telegram</a><br />										
+		    </div><a href="https://www.facebook.com/Mr"><img alt="Facebook" border="0" src="http://1.bp.blogspot.com/-Fpo8Edcz9r8/Uvbt82X_xTI/AAAAAAAAAPs/ulsuFKNvuUI/s20/facebook.png" title="Find me on Facebook" /></a>&nbsp;								<a href="https://plus.google.com/samreysteven91@gmail.com"><img alt="Google+" border="0" src="http://2.bp.blogspot.com/-RlLTbIC_AtM/Uvbt80L9J5I/AAAAAAAAAPw/aQ2WngzkP6o/s20/google_plus.png" title="Add me on Google+" /></a>
+									</ul><hr></div><a href="//www.dmca.com/Protection/Status.aspx?ID=0e3f1e93-5f14-4ec9-a0c9-ea1f67e1ced2" title="DMCA.com Protection Status" class="dmca-badge" target="_top"> <img src="//images.dmca.com/Badges/dmca-badge-w200-5x1-06.png?ID=0e3f1e93-5f14-4ec9-a0c9-ea1f67e1ced2" alt="DMCA.com Protection Status"></a> <script src="//images.dmca.com/Badges/DMCABadgeHelper.min.js"> </script></a>						
+                                            </div>
+                                            <br />
+                                            <br />
+		                                </form>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    
+						
+<?php
+include("../lib/footer.php");
+?>
+</body>
+
+<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==='function'){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/w2omm14f';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+  <script src='//static.domainesia.com/assets/js/typed.js'></script><script>
+        $(document).ready(function() {
+          $(function(){
+              $('.typedString').typed({
+                strings: ['SMM Panel - 5starpanel', 'Murah', 'Fast Proses', '24 Jam Support', 'High Quality', 'Dan masih banyak kelebihan lainya'],
+                typeSpeed: 150
+              });
+          });
+          $('.fa-question-circle').popover({
+            trigger: 'hover',
+            placement: 'right',
+            container: 'body',
+            html: true
+          });
+        });
+        </script>   <script>
